@@ -12,6 +12,6 @@ the project is divided into separated modules to run each module
 <h2>for shell modules</h2>
 1. go to module directory
 2. for the first time run the following command `bash script.sh`
-___
+
 
 # in the future we will use docker instead of the above
