@@ -1,3 +1,7 @@
 /.idea/
 /.vscode/
 *.iml
+/airflow/logs/
+/airflow/plugins/
+/neo4j/data/
+/label-studio/data/
