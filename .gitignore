@@ -5,3 +5,4 @@
 /airflow/plugins/
 /neo4j/data/
 /label-studio/data/
+/elk/data/
