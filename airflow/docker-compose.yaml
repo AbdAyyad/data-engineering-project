@@ -54,7 +54,8 @@ x-airflow-common:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
-  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+    - /tmp/uploaded-cv:/home/spring/uploaded-cv
+#  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     redis:
       condition: service_healthy
@@ -130,6 +131,16 @@ services:
       timeout: 10s
       retries: 5
     restart: always
-
+  back-end:
+    image: abdelrahmanayyad/de-be
+    <<: *airflow-common
+    ports:
+      - 9091:9091
+    environment:
+      data-engineering.server.url: 'http://35.198.127.3:8080'
+  front-end:
+    image: abdelrahmanayyad/de-fe
+    ports:
+      - 80:80
 volumes:
   postgres-db-volume:
