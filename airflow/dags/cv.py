@@ -33,18 +33,19 @@ with DAG(
         url = "http://185.96.69.234:8000/upload"
         payload = {}
         file_name = kwargs['dag_run'].conf['file_id']+'.pdf'
-        files = [
-            ('files', (file_name, open(kwargs['dag_run'].conf['path'], 'rb'), 'application/pdf'))
-        ]
-        headers = {
-            'X-API-KEY': '92f023f8b3ea67d455b9398c3f51fc48'
-        }
-        response = requests.request("POST", url, headers=headers, data=payload, files=files)
-        LOGGER.info('status code from upload api: ' + str(response.status_code))
-        LOGGER.info('response from upload api: ' + str(response.json()[0]))
-        if response.status_code != 200:
-            raise ValueError('upload api return status code' + str(response.status_code))
-        ti.xcom_push(key='parser_id', value=response.json()[0])
+        with open(kwargs['dag_run'].conf['path'], 'rb') as current_file:
+            files = [
+                ('files', (file_name,current_file , 'application/pdf'))
+            ]
+            headers = {
+                'X-API-KEY': '92f023f8b3ea67d455b9398c3f51fc48'
+            }
+            response = requests.request("POST", url, headers=headers, data=payload, files=files)
+            LOGGER.info('status code from upload api: ' + str(response.status_code))
+            LOGGER.info('response from upload api: ' + str(response.json()[0]))
+            if response.status_code != 200:
+                raise ValueError('upload api return status code' + str(response.status_code))
+            ti.xcom_push(key='parser_id', value=response.json()[0])
 
 
     t1 = PythonOperator(

@@ -89,6 +89,7 @@ services:
     restart: always
 
   airflow-webserver:
+    container_name: airflow_web
     <<: *airflow-common
     command: webserver
     ports:
@@ -137,7 +138,7 @@ services:
     ports:
       - 9091:9091
     environment:
-      data-engineering.server.url: 'http://35.207.130.232:8080'
+      data-engineering.server.url: 'http://airflow_web:8080'
   front-end:
     image: abdelrahmanayyad/de-fe
     ports:
