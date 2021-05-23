@@ -138,7 +138,7 @@ services:
     ports:
       - 9091:9091
     environment:
-      data-engineering.server.url: 'http://35.207.109.95/:8080'
+      data-engineering.server.url: 'http://35.207.109.95:8080'
   front-end:
     image: abdelrahmanayyad/de-fe
     ports:
