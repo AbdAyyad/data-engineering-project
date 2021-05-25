@@ -182,6 +182,7 @@ services:
       - NEO4J_apoc_import_file_use__neo4j__config=true
       - NEO4J_AUTH=none
       - NEO4J_dbms_security_procedures_unrestricted=apoc.\\\*
+      - NEO4J_dbms_connector_bolt_address=0.0.0.0:7687
 
 volumes:
   esdata1:
