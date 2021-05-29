@@ -3,7 +3,7 @@ folders=("./dags" "./logs" "./plugins","./neo4j_logs","./neo4j_data")
 for i in "${folders[@]}"; do
   if ! [ -d "$i" ]; then
     echo creating directory "$i"
-    mkdir "$i" > dev/null 2>&1
+    mkdir "$i" > /dev/null 2>&1
   fi
 done
 
