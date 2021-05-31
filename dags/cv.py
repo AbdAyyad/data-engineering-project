@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta,date
 from airflow.utils.dates import days_ago
 
 from airflow import DAG
@@ -743,12 +743,13 @@ with DAG(
         for i in range(len(listvalues)):
             tagsreversed[listvalues[i]] = listkeys[i]
         file_data = None
-        cv_id=str(kwargs['dag_run'].conf['file_id'])
-        file_name = '/home/spring/uploaded-cv/'+cv_id+'.json'
+        file_id = str(kwargs['dag_run'].conf['file_id'])
+        file_name = '/home/spring/uploaded-cv/'+file_id+'.json'
         with open(file_name, encoding='utf-8') as f:
             file_data = json.load(f)
-        file_data['CV_ID']=cv_id
-        data_base_connection = GraphDatabase.driver(uri = "bolt://neo4j:7687", auth=("neo4j", "neo4j"))
+        if 'CV_ID' not in file_data:
+            file_data['CV_ID'] = file_id
+        data_base_connection = GraphDatabase.driver(uri="bolt://neo4j:7687", auth=("neo4j", "neo4j"))
         session = data_base_connection.session()
         ncs,ce,ie,fdl = node_create_builder(file_data)
         LOGGER.info(file_data['CV_ID'])
@@ -775,13 +776,15 @@ with DAG(
         import json
         from elasticsearch import Elasticsearch
         es = Elasticsearch([{'host': 'elastic', 'port': 9200}])
-        cv_id=str(kwargs['dag_run'].conf['file_id'])
+        cv_id = str(kwargs['dag_run'].conf['file_id'])
         file_name = '/home/spring/uploaded-cv/'+cv_id+'.json'
         with open(file_name, encoding='utf-8') as f:
             file_data = json.load(f)
-        file_data['CV_ID']=cv_id
+
+        if 'CV_ID' not in file_data:
+            file_data['CV_ID'] = kwargs['ti'].xcom_pull(key='parser_id', task_ids=['upload_cv'])
         LOGGER.info(file_data)
-        es.index(index='tweets', doc_type='users', id=cv_id, body=file_data)
+        es.index(index='tweets', doc_type='users', id=file_data['CV_ID'], body=file_data)
 
     elastic = PythonOperator(
         task_id='elastic',
